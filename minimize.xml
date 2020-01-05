@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<wayfire>
+	<plugin name="minimize">
+	<_short>Minimize Window</_short>
+	<category>Window Management</category>
+	<option name="activate" type="key">
+		<_short>Activate</_short>
+		<default>&lt;super&gt; KEY_H</default>
+	</option>
+	</plugin>
+</wayfire>
