@@ -46,7 +46,8 @@ class wayfire_minimize : public wf::plugin_interface_t
             {
                 auto view = wf::get_core().get_cursor_focus_view();
 
-		view->minimize_request(true);
+		if (view && view->role == wf::VIEW_ROLE_TOPLEVEL && view->is_mapped())
+		    view->minimize_request(true);
 
                 return true;
             };
