@@ -31,10 +31,15 @@
 
 class wayfire_minimize : public wf::plugin_interface_t
 {
-    wf::key_callback activate_binding;
-    // wayfire_view view;
+    wf::activator_callback activate = [=] (wf::activator_source_t, uint32_t)
+    {
+	auto view = wf::get_core().get_cursor_focus_view();
 
-    wf::option_wrapper_t<wf::keybinding_t> activate_key{"minimize/activate"};
+	if (view && view->role == wf::VIEW_ROLE_TOPLEVEL && view->is_mapped())
+	    view->minimize_request(true);
+
+	return true;
+    };
 
     public:
         void init() override
@@ -42,22 +47,14 @@ class wayfire_minimize : public wf::plugin_interface_t
             grab_interface->name = "minimize";
             grab_interface->capabilities = wf::CAPABILITY_MANAGE_DESKTOP;
 
-            activate_binding = [=] (uint32_t)
-            {
-                auto view = wf::get_core().get_cursor_focus_view();
-
-		if (view && view->role == wf::VIEW_ROLE_TOPLEVEL && view->is_mapped())
-		    view->minimize_request(true);
-
-                return true;
-            };
-
-            output->add_key(activate_key, &activate_binding);
+	    output->add_activator(
+		    wf::option_wrapper_t<wf::activatorbinding_t>{"minimize/activate"},
+		    &activate);
         }
 
         void fini() override
         {
-            output->rem_binding(&activate_binding);
+            output->rem_binding(&activate);
         }
 };
 
